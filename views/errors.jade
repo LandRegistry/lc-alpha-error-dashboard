@@ -1,0 +1,13 @@
+html(lang="en")
+    head   
+        title Bankruptcy Error Dashboard
+    body
+        table
+            each row in data
+                tr
+                    td= row.source
+                    td= row.date
+                    td
+                        ul
+                            each value, key in row.data
+                                li= key + ': ' + value

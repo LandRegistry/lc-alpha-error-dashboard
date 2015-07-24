@@ -1,0 +1,17 @@
+{
+  "name": "error-dashboard",
+  "version": "0.0.0",
+  "description": "",
+  "main": "routes.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "BSD",
+  "dependencies": {
+    "express": "~4.13.1",
+    "amqplib": "~0.3.2",
+    "jade": "~1.11.0",
+    "request": "~2.60.0"
+  }
+}
