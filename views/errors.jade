@@ -1,13 +1,21 @@
 html(lang="en")
     head   
         title Bankruptcy Error Dashboard
+        link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
     body
-        table
-            each row in data
+        div
+            table(class='table table-striped')
                 tr
-                    td= row.source
-                    td= row.date
-                    td
-                        ul
-                            each value, key in row.data
-                                li= key + ': ' + value
+                    th Source
+                    th Date
+                    th Error
+                    th Actions
+                each row in data
+                    tr
+                        td= row.source
+                        td= row.date
+                        td
+                            ul
+                                each value, key in row.data
+                                    li= key + ': ' + value
+                        td

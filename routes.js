@@ -2,6 +2,7 @@ var express = require('express');
 var amqp = require('amqplib');
 var http = require('http');
 var request = require('request');
+var when = require('when');
 var restCalls = require('./utility/rest_calls.js')
 var app = express();
 
@@ -27,65 +28,47 @@ var server = app.listen(5011, function() {
     console.log('App listening at http://%s.%s', host, port);
 });
 
-var hostname = "amqp://mquser:mqpassword@localhost:5672";
-amqp.connect(hostname).then(function(connection) {
-    process.once('SIGINT', function() { connection.close(); });
+
+// migration_error_queue
+
+var handleError = function(channel, message, source) {
+    var obj;
+    if(message) {    
+        console.log('%s %s', source, message.content.toString());
+        obj = JSON.parse(message.content.toString());
+    } else {
+        console.log('%s Null or Undefined message', source);
+        obj = {};
+    }
     
-    return connection.createChannel().then(function(channel) {
-        
-        var ok = channel.assertQueue('sync_error', {durable: true});
-        ok = ok.then(function(_qok) {
-            
-            return channel.consume('sync_error', function(message) {
-                console.log('Received %s', message.content.toString());
-                var obj = JSON.parse(message.content.toString());        
-                var error = {
-                    date: (new Date()).toJSON(),
-                    source: "Synchroniser",
-                    data: obj[0]
-                    
-                };
-                restCalls.sendError(error, function() {
-                    console.log("Send OK");
-                    channel.ack(message);
-                }, function() {
-                    console.log("Send Failed");
-                }  );
-                //console.log(error);
-                
-                
-                
-            });
-            
-        });
-        
-        return ok.then(function(_consumeOK){
-            console.log('Waiting...');
-        });
-        
+    var error = {
+        date: (new Date()).toJSON(),
+        source: source,
+        data: obj
+    };
+
+    restCalls.sendError(error, function() {
+        console.log("Send OK");
+        channel.ack(message);
+    }, function() {
+        console.log("Send Failed");
     });
-    
-    
+};
+
+var hostname = "amqp://mquser:mqpassword@localhost:5672";
+amqp.connect(hostname).then(function(connection) {    
+    var ok = connection.createChannel();
+    ok = ok.then(function(channel) {
+        return when.all([
+            channel.assertQueue('migration_error_queue'),
+            channel.consume('migration_error_queue', function(message){
+                handleError(channel, message, "Migrator");
+            }),
+            channel.assertQueue('sync_error'),
+            channel.consume('sync_error', function(message){
+                handleError(channel, message, "Synchroniser");
+            })
+        ]);        
+    });    
 }).then(null, console.warn);
 
-
-
-/*var amqp = require('amqplib');
-
-amqp.connect('amqp://localhost').then(function(conn) {
-  process.once('SIGINT', function() { conn.close(); });
-  return conn.createChannel().then(function(ch) {
-    
-    var ok = ch.assertQueue('hello', {durable: false});
-    
-    ok = ok.then(function(_qok) {
-      return ch.consume('hello', function(msg) {
-        console.log(" [x] Received '%s'", msg.content.toString());
-      }, {noAck: true});
-    });
-    
-    return ok.then(function(_consumeOk) {
-      console.log(' [*] Waiting for messages. To exit press CTRL+C');
-    });
-  });
-}).then(null, console.warn);*/

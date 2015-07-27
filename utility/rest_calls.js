@@ -11,8 +11,10 @@ module.exports.sendError = function(errorData, success, failure) {
         if(response.statusCode == 201) {
             success();
         } else {
-            failure(); // TODO: something cleverer
+            console.log("Status: %s", response.statusCode); 
+            if( failure ) {
+                failure(); // TODO: something cleverer
+            }
         }
     }); 
-    
 };
