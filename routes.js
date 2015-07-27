@@ -9,7 +9,7 @@ var app = express();
 app.set('view engine', 'jade');
 
 app.get('/', function(req, res) {
-   res.render('index', {title: 'Hello', message: 'THis is new'});
+   res.sendStatus(200);
 });
 
 app.get('/errors', function(req, res) {
@@ -27,6 +27,22 @@ var server = app.listen(5011, function() {
     var port = server.address().port;
     console.log('App listening at http://%s.%s', host, port);
 });
+
+var shutdown = function() {
+    console.log("Shutting down");
+    server.close(function() {
+        console.log("Connections closed");
+        process.exit()
+    });
+
+    setTimeout(function(){
+        console.error("Unable to close connections");
+        process.exit();
+    }, 10000);
+}
+
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
 
 
 // migration_error_queue
