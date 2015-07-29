@@ -80,10 +80,16 @@ amqp.connect(hostname).then(function(connection) {
             channel.consume('migration_error_queue', function(message){
                 handleError(channel, message, "Migrator");
             }),
+            
             channel.assertQueue('sync_error'),
             channel.consume('sync_error', function(message){
                 handleError(channel, message, "Synchroniser");
-            })
+            }),
+            
+            channel.assertQueue('names_error'),
+            channel.consume('names_error', function(message){
+                handleError(channel, message, "Names");
+            })            
         ]);        
     });    
 }).then(null, console.warn);
