@@ -2,6 +2,7 @@ from flask import Flask, Response
 import os
 from log.logger import setup_logging
 import logging
+import json
 import requests
 
 
@@ -12,7 +13,7 @@ setup_logging(app.config['DEBUG'])
 
 
 def check_legacy_health():
-    return requests.get(app.config['B2B_PROCESSOR_URL'] + '/health')
+    return requests.get(app.config['LEGACY_DB_URI'] + '/health')
 
 
 application_dependencies = [
