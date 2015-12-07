@@ -9,34 +9,10 @@ import logging
 def setup_incoming(hostname):
     connection = kombu.Connection(hostname=hostname)
     connection.connect()
-    queue = kombu.Queue('land_charges_errors')
+    queue = kombu.Queue('errors')
     consumer = kombu.Consumer(connection.channel(), queues=queue, callbacks=[message_received], accept=['json'])
     consumer.consume()
     return connection, consumer
-    # connection = kombu.Connection(hostname=hostname)
-    # connection.connect()
-    #
-    # exchange = kombu.Exchange(type="topic", name="new.bankruptcy")
-    #
-    # channel = connection.channel()
-    #
-    # exchange.maybe_bind(channel)
-    # maybe_declare(exchange, channel)
-    #
-    # queue = kombu.Queue(name='simple', exchange=exchange, routing_key='#')
-    # queue.maybe_bind(channel)
-    # try:
-    #     queue.declare()
-    # except AccessRefused:
-    #     logging.error("Access Refused")
-    # logging.debug("queue name, exchange, binding_key: %s, %s, %s", queue.name, queue.exchange, queue.routing_key)
-    #
-    # consumer = kombu.Consumer(channel, queues=queue, callbacks=[message_received], accept=['json'])
-    # consumer.consume()
-    #
-    # logging.debug('channel_id: %s', consumer.channel.channel_id)
-    # logging.debug('queue(s): %s', consumer.queues)
-    # return connection, consumer
 
 
 def run():
