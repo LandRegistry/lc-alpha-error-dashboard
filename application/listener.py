@@ -41,7 +41,7 @@ def message_received(body, message):
 
 
 def listen(incoming_connection, run_forever=True):  # pragma: no cover
-    logging.info('Listening for new registrations')
+    logging.info('Listening for errors')
 
     while True:
         try:
