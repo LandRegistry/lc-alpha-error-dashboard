@@ -7,7 +7,7 @@ import requests
 
 
 app = Flask(__name__)
-app.config.from_object(os.getenv('SETTINGS', "config.DevelopmentConfig"))
+app.config.from_object('config.Config')
 
 setup_logging(app.config['DEBUG'])
 
