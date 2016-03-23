@@ -34,7 +34,7 @@ def message_received(body, message):
         }
         logging.info("Received unknown error '{}'".format(json.dumps(body)))
 
-    request_uri = app.config['LEGACY_DB_URI'] + '/errors'
+    request_uri = app.config['LEGACY_ADAPTER_URI'] + '/errors'
     response = requests.post(request_uri, data=json.dumps(error), headers={'Content-Type': 'application/json'})
     logging.info('POST to /errors: %s %s', response.status_code, response.reason)
     message.ack()
