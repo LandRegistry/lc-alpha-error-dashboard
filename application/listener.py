@@ -20,7 +20,6 @@ ERROR_SCHEMA = {
 def message_received(body, message):
     logging.info("Received new error: %s", str(body))
 
-    # TODO: make sure it's right format for sending on...
     try:
         validate(body, ERROR_SCHEMA)
         error = body
