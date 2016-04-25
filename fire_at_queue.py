@@ -5,7 +5,7 @@ import json
 
 def setup_queue(hostname):
     conn = kombu.Connection(hostname=hostname)
-    producer = conn.SimpleQueue('land_charges_errors')
+    producer = conn.SimpleQueue('errors')
     return conn, producer
 
 if len(sys.argv) != 2:

@@ -15,7 +15,7 @@ class OutputFilter(logging.Filter):
 
 def setup_logging(debug=True):
     print("Logging set up. Debug is {}".format(debug))
-    level = logging.DEBUG if debug else logging.WARN
+    level = logging.DEBUG if debug else logging.INFO
 
     root_logger = logging.getLogger()
     formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s',

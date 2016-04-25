@@ -13,7 +13,7 @@ setup_logging(app.config['DEBUG'])
 
 
 def check_legacy_health():
-    return requests.get(app.config['LEGACY_DB_URI'] + '/health')
+    return requests.get(app.config['LEGACY_ADAPTER_URI'] + '/health')
 
 
 application_dependencies = [
